@@ -1,0 +1,97 @@
+CREATE TABLE Rayon(
+   Code_rayon INT,
+   Nom_rayon VARCHAR(50) NOT NULL,
+   Description VARCHAR(90) NOT NULL,_
+   PointsFidelRayon INT NOT NULL,
+   Indice_visibilite INT NOT NULL,
+   PRIMARY KEY(Code_rayon),
+   UNIQUE(Nom_rayon)
+);
+
+CREATE TABLE Fournisseur(
+   No_Four INT,
+   PRIMARY KEY(No_Four)
+);
+
+CREATE TABLE SousCategorie(
+   No_SousCateg INT,
+   PRIMARY KEY(No_SousCateg)
+);
+
+CREATE TABLE Pays(
+   Pays VARCHAR(50),
+   PRIMARY KEY(Pays)
+);
+
+CREATE TABLE Ville(
+   CodePostal INT,
+   DistanceKm INT NOT NULL,
+   Ville VARCHAR(50) NOT NULL,
+   Pays VARCHAR(50) NOT NULL,
+   PRIMARY KEY(CodePostal,Ville),
+   FOREIGN KEY(Pays) REFERENCES Pays(Pays),
+   UNIQUE(DistanceKm,Ville)
+);
+
+CREATE TABLE Calendrier(
+   DateH DATETIME,
+   Heure_Ticket TIME NOT NULL,
+   PRIMARY KEY(DateH)
+);
+
+CREATE TABLE Produit(
+   Ref_Prod INT,_
+   Nom_Prod VARCHAR(50) NOT NULL,
+   Indice_Satisf FLOAT,
+   PointsFidelProduit INT NOT NULL,
+   Indisponible LOGICAL NOT NULL,
+   Qte_ParUnit VARCHAR(50) NOT NULL,
+   Prix_unit CURRENCY,
+   Unites_Com INT,
+   Niveau_Reap INT NOT NULL,
+   Code_rayon INT NOT NULL,
+   No_Four INT NOT NULL,
+   No_SousCateg INT NOT NULL,
+   PRIMARY KEY(Ref_Prod),
+   UNIQUE(Nom_Prod),
+   FOREIGN KEY(Code_rayon) REFERENCES Rayon(Code_rayon),
+   FOREIGN KEY(No_Four) REFERENCES Fournisseur(No_Four),
+   FOREIGN KEY(No_SousCateg) REFERENCES SousCategorie(No_SousCateg)
+);
+
+CREATE TABLE Client(
+   Code_Cli VARCHAR(10),
+   Nom VARCHAR(50),
+   Prenom VARCHAR(50),
+   DateNaiss DATE,
+   NbAdulte INT,
+   NbEnfant INT,
+   NbPersFoyer INT,
+   PointsFidel INT,
+   Adresse VARCHAR(50),
+   CodePostal INT ,
+   Ville VARCHAR(50),
+   PRIMARY KEY(Code_Cli),
+   FOREIGN KEY(CodePostal,Ville) REFERENCES Ville(CodePostal,Ville),
+   UNIQUE(Nom, Prenom, DateNaiss)
+);
+
+CREATE TABLE Ticket(
+   No_Ticket INT,
+   NoCaisse INT NOT NULL,
+   DateH DATETIME NOT NULL,
+   Code_Cli VARCHAR(10),
+   PRIMARY KEY(No_Ticket),
+   FOREIGN KEY(Code_Cli) REFERENCES Client(Code_Cli)
+);
+
+CREATE TABLE DetailTicket(
+   No_Ticket INT,
+   Ref_Prod INT,
+   PrixUnit CURRENCY,
+   Quantite INT NOT NULL,
+   Remise FLOAT,
+   PRIMARY KEY(No_Ticket, Ref_Prod),
+   FOREIGN KEY(No_Ticket) REFERENCES Ticket(No_Ticket),
+   FOREIGN KEY(Ref_Prod) REFERENCES Produit(Ref_Prod)
+);

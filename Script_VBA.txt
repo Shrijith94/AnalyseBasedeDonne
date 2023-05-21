@@ -1,0 +1,101 @@
+Sub Create_Tables()
+
+DoCmd.RunSQL "CREATE TABLE Rayon(" & _
+   "Code_rayon INT," & _
+   "Nom_rayon VARCHAR(50) NOT NULL," & _
+   "Description VARCHAR(90) NOT NULL," & _
+   "PointsFidelRayon INT NOT NULL," & _
+   "Indice_visibilite INT NOT NULL," & _
+   "PRIMARY KEY(Code_rayon)," & _
+   "UNIQUE(Nom_rayon)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE Fournisseur(" & _
+   "No_Four INT," & _
+   "PRIMARY KEY(No_Four)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE SousCategorie(" & _
+   "No_SousCateg INT," & _
+   "PRIMARY KEY(No_SousCateg)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE Pays(" & _
+   "Pays VARCHAR(50)," & _
+   "PRIMARY KEY(Pays)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE Ville(" & _
+   "CodePostal INT," & _
+   "DistanceKm INT NOT NULL," & _
+   "Ville VARCHAR(50) NOT NULL," & _
+   "Pays VARCHAR(50) NOT NULL," & _
+   "PRIMARY KEY(CodePostal,Ville)," & _
+   "FOREIGN KEY(Pays) REFERENCES Pays(Pays)," & _
+   "UNIQUE(DistanceKm,Ville)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE Calendrier(" & _
+   "DateH DATETIME," & _
+   "Heure_Ticket TIME NOT NULL," & _
+   "PRIMARY KEY(DateH)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE Produit(" & _
+   "Ref_Prod INT," & _
+   "Nom_Prod VARCHAR(50) NOT NULL," & _
+   "Indice_Satisf FLOAT," & _
+   "PointsFidelProduit INT NOT NULL," & _
+   "Indisponible LOGICAL NOT NULL," & _
+   "Qte_ParUnit VARCHAR(50) NOT NULL," & _
+   "Prix_unit CURRENCY," & _
+   "Unites_Com INT," & _
+   "Niveau_Reap INT NOT NULL," & _
+   "Code_rayon INT NOT NULL," & _
+   "No_Four INT NOT NULL," & _
+   "No_SousCateg INT NOT NULL," & _
+   "PRIMARY KEY(Ref_Prod)," & _
+   "UNIQUE(Nom_Prod)," & _
+   "FOREIGN KEY(Code_rayon) REFERENCES Rayon(Code_rayon)," & _
+   "FOREIGN KEY(No_Four) REFERENCES Fournisseur(No_Four)," & _
+   "FOREIGN KEY(No_SousCateg) REFERENCES SousCategorie(No_SousCateg)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE Client(" & _
+   "Code_Cli VARCHAR(10)," & _
+   "Nom VARCHAR(50)," & _
+   "Prenom VARCHAR(50)," & _
+   "DateNaiss DATE," & _
+   "NbAdulte INT," & _
+   "NbEnfant INT," & _
+   "NbPersFoyer INT ," & _
+   "PointsFidel INT ," & _
+   "Adresse VARCHAR(50) ," & _
+   "CodePostal INT ," & _
+   "Ville VARCHAR(50)," & _
+   "PRIMARY KEY(Code_Cli)," & _
+   "FOREIGN KEY(CodePostal,Ville) REFERENCES Ville(CodePostal,Ville)," & _
+   "UNIQUE(Nom, Prenom, DateNaiss)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE Ticket(" & _
+   "No_Ticket INT," & _
+   "NoCaisse INT NOT NULL," & _
+   "DateH DATETIME NOT NULL," & _
+   "Code_Cli VARCHAR(10)," & _
+   "PRIMARY KEY(No_Ticket)," & _
+   "FOREIGN KEY(Code_Cli) REFERENCES Client(Code_Cli)" & _
+");"
+
+DoCmd.RunSQL "CREATE TABLE DetailTicket(" & _
+   "No_Ticket INT," & _
+   "Ref_Prod INT," & _
+   "PrixUnit CURRENCY," & _
+   "Quantite INT NOT NULL," & _
+   "Remise FLOAT," & _
+   "PRIMARY KEY(No_Ticket, Ref_Prod)," & _
+   "FOREIGN KEY(No_Ticket) REFERENCES Ticket(No_Ticket)," & _
+   "FOREIGN KEY(Ref_Prod) REFERENCES Produit(Ref_Prod)" & _
+");"
+
+End Sub
